@@ -142,7 +142,7 @@ export const bugs = [
     urlBug:"https://academybugs.com/store/all-items/",
     action: async(page)=>{
       await gotoPage(page, 'https://academybugs.com/store/all-items/');
-      await clickElement(page, page.locator('.ec_product_image_effect_4881370'));
+      await clickElement(page, page.locator('#ec_product_image_effect_4281370'));
     }
   },
   { //🐞 Bug #9: Sign In Button
@@ -196,11 +196,11 @@ export const bugs = [
       await page.waitForTimeout(1000);
       await gotoPage(page, 'https://academybugs.com/my-cart/');
       await page.hover('.ec_cart_widget_button');
-      const cartWidget = page.locator('ec_cart_widget_minicart_wrap');
+      const cartWidget = page.locator('.ec_cart_widget_minicart_wrap');
       await cartWidget.waitFor({ state: 'visible', timeout: 5000 });
       // Use force click in case it's covered
       //await cartTotal.click({ force: true });
-      await clickByText(page, 'xz1@#'); //await clickElement(page, '#ec_cartitem_items_2063564');
+      await clickByText(page, 'xz1@#');
     }
   },
   { // 🐞 Bug #13: Product Description
@@ -212,7 +212,8 @@ export const bugs = [
     urlBug: 'https://academybugs.com/store/professional-suit/',
     action: async (page) => {
       await gotoPage(page, 'https://academybugs.com/store/professional-suit/');
-      await clickByText(page, 'Nam nec tellus a odio');
+      //await clickByText(page, 'Nam nec tellus a odio');
+      await page.getByText('Nam nec tellus a odio').first().click();
     }
   },
   { // 🐞 Bug #14: Misspelled Color Name
@@ -296,7 +297,7 @@ export const bugs = [
       //await clickElement(page, page.locator("span[class*='billing_info_update_loader']"));
       
       //const bugAction = page.locator('.ec_cart_billing_info_update_loader.academy-bug17');
-      const bugAction = page.locator("span[class*='billing_info_update_loader']");
+      const bugAction = page.locator("span[class*='ec_cart_billing_info_update_loader']");
       await bugAction.waitFor({ state: 'visible', timeout: 5000 });
       await bugAction.click({ force: true });
     }
@@ -367,7 +368,7 @@ export const bugs = [
     urlBug: 'https://academybugs.com/find-bugs/',
     action: async (page) => {
       await gotoPage(page, 'https://academybugs.com/find-bugs/');
-      await clickByText(page, '25 per page');
+      //await clickByText(page, '25 per page');
       const bugAction = page.locator('a.what-we-offer-pagination-link', { hasText: '10' }); //Validar si se puede optimizar
       await clickElement(page, bugAction);
     }
