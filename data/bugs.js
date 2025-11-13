@@ -298,6 +298,10 @@ export const bugs = [
       
       //const bugAction = page.locator('.ec_cart_billing_info_update_loader.academy-bug17');
       const bugAction = page.locator("span[class*='ec_cart_billing_info_update_loader']");
+      console.log(await bugAction.isVisible());
+      console.log(await bugAction.boundingBox());
+
+
       await bugAction.waitFor({ state: 'visible', timeout: 5000 });
       await bugAction.click({ force: true });
     }

@@ -27,7 +27,7 @@ export async function safeType(page, selector, text) {
     await element.fill(text);
     return true;
   }
-  console.warn('⛔ → No se pudo escribir en el selector: ${selector}');
+  console.warn(`⛔ → No se pudo escribir en el selector: ${selector}`);
   return false;
 }
 
@@ -35,15 +35,39 @@ export async function safeType(page, selector, text) {
 export async function loginUser(page, url, email, password) {
   await page.goto(url);
   await page.waitForLoadState('domcontentloaded');
+
   await console.log('🌐 → Página de login cargada');
 
-  await safeType(page, '#email', email);
-  await safeType(page, '#password', password);
-  await clickByRole(page, 'button', 'SIGN IN');
+  await page.waitForSelector('#ec_account_login_email', { state: 'visible' });
+  await page.waitForSelector('#ec_account_login_password', { state: 'visible' });
+
+  const emailSelector = '#ec_account_login_email';
+  const passwordSelector = '#ec_account_login_password';
+
+  await safeType(page, emailSelector, email);
+  await safeType(page, passwordSelector, password);
+
+    // Botón roto → click via JS
+  await page.evaluate(() => {
+    document.querySelector('button[name="ec_account_form_action"]')?.click();
+  });
+  console.log('🔄 → Enviando formulario sin usar el botón defectuoso...');
+  
+  // Espera a que cargue y verifiquemos si realmente hubo login
   await page.waitForLoadState('domcontentloaded');
-  await console.log('🔐 → Usuario logueado con éxito');
-  await page.waitForTimeout(2000); //Espera adicional para asegurar que la sesión esté completamente iniciada
-  return true;
+  await page.waitForTimeout(1000);
+
+  // Verificación real del login
+  const loggedIn = await page.locator('.ec_cart_input_row').isVisible().catch(() => false);
+
+  if (loggedIn) {
+    console.log('🔐 → Usuario logueado con éxito');
+    return true;
+  } else {
+    console.warn('⛔ → El login NO se completó (probablemente por otro bug)');
+    console.log('🔎 → URL actual:', await page.url());
+    return false;
+  }
 }
 
 export async function addToCart(page, buttonSelectorOrLocator) {
