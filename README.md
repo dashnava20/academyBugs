@@ -1,33 +1,3 @@
-## Notes (DELETE AFTER FINISHED)
-
--Contenido{
-   -Añadir observaciones sobre la técnica utilizada para encontrar el bug en cada comentario del archivo @bugs.js.
-   -Depurar comentarios y revisión de emojis.
-   -
-}
-
--Reportería{
-   -Capturar las propiedades del objeto en el sitio web: {Severity=Low, Issue Type=Content, Frequency=Every Time, Environment: All Browsers}.
-   -Extraer imágenes para el reporte final.
-   -Jugar con gráficos.
-   -
-}
-
--Diseño{
-   -Agradecer a Academy Bugs (enviarles un correo {?}).
-   -Diseñar un árbol de procesos de la interconexión del código.
-}
-
-DataTemporal{
-   -/**
-      correo: testing_dash@mail.com
-      pass:   123456789
-   */
-   -Validar si la data se puede dejar en variables de entorno.
-}
-
-
-
 # Academy Bugs Automation
 
 Automated end-to-end tests for [academybugs.com](https://academybugs.com) using Playwright.
