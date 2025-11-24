@@ -65,6 +65,7 @@ bugAcademy/
 ## Tricks
 
 Feel free to use this list to unlock all bugs in one clic:
+```bash
    {
    "first":1,
    "second":1,
@@ -92,7 +93,7 @@ Feel free to use this list to unlock all bugs in one clic:
    "twentyFourth":1,
    "twentyFifth":1
    }
-
+```
 ---
 
 Happy testing! 🐞🥑
