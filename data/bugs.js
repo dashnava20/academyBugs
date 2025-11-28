@@ -138,11 +138,11 @@ export const bugs = [
     academyBugId: 'eighth',
     nombre: 'Image Space Underneath',
     tipo: 'Visual',
-    respuesta: 'Item images have no space underneath',
+    respuesta: ' Product images have no space underneath',
     urlBug:"https://academybugs.com/store/all-items/",
     action: async(page)=>{
       await gotoPage(page, 'https://academybugs.com/store/all-items/');
-      await clickElement(page, page.locator('#ec_product_image_effect_4281370'));
+      await clickElement(page, page.locator('.ec_product_li').first());
     }
   },
   { //🐞 Bug #9: Sign In Button
@@ -280,7 +280,8 @@ export const bugs = [
       await loader.waitFor({ state: 'hidden', timeout: 10000 }).catch(() => {});
 
       // Optionally, click the loader if required by the bug
-      await clickElement(page, loader);
+      //await clickElement(page, loader);
+      await loader.click({ force: true });
     }
   },
   { //🐞 Bug #17: Order History Page
@@ -315,7 +316,9 @@ export const bugs = [
     urlBug:"https://academybugs.com/account/?ec_page=dashboard",
     action: async(page)=>{
       await loginUser(page, 'https://academybugs.com/account/?ec_page=login', 'testing_dash@mail.com', '123456789'); //más adelante con variables de entorno
-      await clickElement(page, '.academy-bug-18');
+      const itemLoading = page.locator('.academy-bug-18');
+      await itemLoading.waitFor({ state: 'visible', timeout: 5000 });
+      await itemLoading.click({ force: true });
     }
   },
   { //🐞 Bug #19: Product Page Loads Infinitely
@@ -327,8 +330,9 @@ export const bugs = [
     urlBug:"https://academybugs.com/anchor-bracelet/",
     action: async(page)=>{
       await gotoPage(page, 'https://academybugs.com/anchor-bracelet/');
-      await clickElement(page, '.academy-bug-19');
-      //const bugAction = page.locator('.ec_cart_billing_info_update_loader.academy-bug-19');
+      const itemLoading = page.locator('.academy-bug-19');
+      await itemLoading.waitFor({ state: 'visible', timeout: 5000 });
+      await itemLoading.click({ force: true });
     }
   },
   { //🐞 Bug #20: Social Media Page Loads Infinitely | MySpace

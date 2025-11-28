@@ -12,7 +12,7 @@ export async function bugInformation(page, expectedCount, nombreBug, tipoBug, re
 
     const bugPopup = page.locator('#bug-popup');
     try {
-        await bugPopup.waitFor({ state: 'visible', timeout: 20000 });
+        await bugPopup.waitFor({ state: 'visible', timeout: 10000 });
         console.log('✅ → Popup de cuestionario visible');
         await answerQuestionary(page, tipoBug, respuesta);
 

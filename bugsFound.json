@@ -1,1 +1,9 @@
-[]
+[
+  "Bug #19: Product Page Loads Infinitely",
+  "Bug #20: Social Media Page Loads Infinitely | MySpace",
+  "Bug #21: Currency Freezes the Page",
+  "Bug #22: Paginator Freezes the Page",
+  "Bug #23: Post Comment Freezes the Page",
+  "Bug #24: Retrieve Password Freezes the Page",
+  "Bug #25: Product Increment Freezes the Page"
+]
