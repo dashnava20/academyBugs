@@ -8,9 +8,8 @@ export async function clickElement(page, element) {
 }
 
 export async function gotoPage(page, url) {
-  await page.goto(url);
-  await page.waitForLoadState('domcontentloaded');
-  await console.log('🌐 → Sitio cargado con éxito');
+  await page.goto(url, { waitUntil: 'domcontentloaded' });
+  console.log('🌐 → Sitio cargado con éxito. Iniciando prueba...');
 }
 
 export async function clickByRole(page, role, name) {
@@ -23,13 +22,21 @@ export async function clickByText(page, text) {
 
 export async function safeType(page, selector, text) {
   const element = page.locator(selector);
-  if (await element.isVisible().catch(() => false)) {
+
+  try {
+    await element.waitFor({ state: 'visible', timeout: 5000 });
+    await element.fill('');
     await element.fill(text);
+
+    console.log(`✅ → Texto escrito en ${selector}: ${text}`);
     return true;
+  } catch (e) {
+      console.warn(`⛔ → No se pudo escribir en el selector: ${selector}`);
+      console.warn(`⛔ → Motivo: ${e.message}`);
+    return false;
   }
-  console.warn(`⛔ → No se pudo escribir en el selector: ${selector}`);
-  return false;
 }
+
 
 //Login con credenciales seguras
 export async function loginUser(page, url, email, password) {

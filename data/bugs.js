@@ -32,7 +32,6 @@ export const bugs = [
       await gotoPage(page, 'https://academybugs.com/my-cart/');
       const cartTotal = page.locator('#ec_cart_total');
       await cartTotal.waitFor({ state: 'visible', timeout: 5000 });
-      // Use force click in case it's covered
       await cartTotal.click({ force: true });
     }
   },
@@ -45,31 +44,9 @@ export const bugs = [
     urlBug: "https://academybugs.com/store/dark-grey-jeans/",
     action: async (page) => {
       await gotoPage(page, 'https://academybugs.com/store/dark-grey-jeans/');
-      // Wait for manufacturer link to be visible
-      //await page.locator('#manufacturer-bug').waitFor({ state: 'visible', timeout: 5000 });
-      //await clickElement(page, '#manufacturer-bug');
       await clickByRole(page, 'link', 'Denim')
       await page.waitForLoadState('domcontentloaded');
       await page.waitForURL('https://academybugs.com/stored/extra/denim/', { timeout: 5000 }).catch(() => {});
-
-      // Click and wait for either navigation or 404 content
-      /*const [maybeNav] = await Promise.all([
-        page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 7000 }).catch(() => null),
-        //clickElement(page, '#manufacturer-bug')
-        clickByRole(page, 'link', 'Denim')
-      ]);*/
-      // Wait for 404 content to appear (if navigation didn't happen)
-      /*const is404Visible = await page.locator('#sq-content').waitFor({ state: 'visible', timeout: 7000 }).catch(() => false);
-      const currentURL = page.url();
-      if (maybeNav && currentURL !== "https://academybugs.com/store/dark-grey-jeans/") {
-        console.log(`✅ → La URL cambió correctamente: ${currentURL}`);
-      } else if (is404Visible) {
-        console.log("✅ → Contenido 404 detectado sin cambio de URL");
-      } else {
-        throw new Error("❌ → La URL no cambió ni se cargó el contenido esperado.");
-      }*/
-      // Confirmar que se cargó el contenido 404
-      //await page.locator('.sq-main-title').waitFor({ state: 'visible', timeout: 5000 });
       console.log("✅ → Contenedor 404 visible");
     }
   },
@@ -153,7 +130,6 @@ export const bugs = [
     respuesta: 'The Sign In button should be above the footer',
     urlBug:"https://academybugs.com/store/professional-suit/",
     action: async(page)=>{
-      //const bugAction = page.locator('.ec_login_widget_button ec-widget-login');
       await gotoPage(page, 'https://academybugs.com/store/professional-suit/');
       await clickByRole(page, 'button', 'SIGN IN');
     }
@@ -166,7 +142,6 @@ export const bugs = [
     respuesta: 'The Password label should aligned to the left',
     urlBug:"https://academybugs.com/account/?ec_page=login&account_error=login_failed",
     action: async(page)=>{
-        //const bugAction = page.locator('element');
         await gotoPage(page, 'https://academybugs.com/account/?ec_page=login&account_error=login_failed');
         await clickByText(page, 'Password*');
     }
@@ -400,12 +375,10 @@ export const bugs = [
     nombre: 'Retrieve Password Freezes the Page',
     tipo: 'Visual',
     respuesta: 'The Password label should aligned to the left',
-    urlBug:"https://academybugs.com/account/?ec_page=forgot_password",
+    urlBug:'https://academybugs.com/account/?ec_page=forgot_password',
     action: async(page)=>{
-        //const bugAction = page.locator('element');
         await gotoPage(page, 'https://academybugs.com/account/?ec_page=forgot_password');
-        //const emailTest = page.getByRole('textbox', { name: 'Email', exact: true });
-        await safeType(page, '.ec_account_button', 'test_dash@mail.com'); //Combinar con las variables de entorno
+        await safeType(page, '#ec_account_forgot_password_email', 'testing_dash@mail.com'); //Combinar con las variables de entorno
         await clickByRole(page, 'button', 'RETRIEVE PASSWORD');
     }
   },
@@ -415,7 +388,7 @@ export const bugs = [
     nombre: 'Product Increment Freezes the Page',
     tipo: 'Crash',
     respuesta: 'The quantity is increased to a desired value',
-    urlBug:"https://academybugs.com/store/denim-coat/",
+    urlBug:'https://academybugs.com/store/denim-coat/',
     action: async(page)=>{
       await gotoPage(page, 'https://academybugs.com/store/denim-coat/');
       await clickByRole(page, 'img', 'Green'); //It can also be 'Yelow'.

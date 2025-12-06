@@ -1,39 +1,32 @@
 // utils/bugInformation.js
-            //await bugInformation(page, bug.id - 1, bug.nombre, bug.tipo, bug.respuesta, bug.urlBug, bug.academyBugId); 
+            
 export async function bugInformation(page, expectedCount, nombreBug, tipoBug, respuesta, academyBugId) {
     await page.waitForLoadState();
 
     if (await page.getByRole('heading', { name: 'You found a crash bug,' }).isVisible().catch(()=>false)) {
-        console.log('✅ → Popup Crash mostrado, esperando 5 segundos...');
+        console.log('✅ → Popup Crash: visible. Continuando en 7 segundos...');
         await page.waitForTimeout(7000);
     } else {
-        console.log(`⛔ → Popup Crash no mostrado. Continuando...`);
+        console.log('⛔ → Popup Crash: no visible. Continuando...');
     }
 
     const bugPopup = page.locator('#bug-popup');
     try {
         await bugPopup.waitFor({ state: 'visible', timeout: 10000 });
-        console.log('✅ → Popup de cuestionario visible');
+        console.log('✅ → Popup Cuestionario: visible. Respondiendo...');
         await answerQuestionary(page, tipoBug, respuesta);
 
         const reportBtn = page.getByRole('button', { name: 'View Issue Report' });
-        //await expect(reportBtn).toBeVisible({ timeout: 7000 });
         await reportBtn.click();
     } catch (err) {
-        console.log('⛔ → Popup cuestionario no mostrado. Continuando...');
+        console.log('⛔ → Popup Cuestionario: no visible. Continuando...');
     }
 
-    await closePopup(page, 'popmake-4406');
+    await closePopup(page, 'academy-custom-popup');
     await page.waitForLoadState();
     await closePopup(page, 'popmake-4393');
     await page.waitForLoadState();
 
-    //Desactivo debido a la ejecución en paralelo (no se puede llevar el contador)
-    //const counterText = await page.locator('#bugs-counter-badge > span').textContent();
-    //const counterNum = Number(counterText);
-
-    //expect(counterNum).toBe(expectedCount + 1);
-    //console.log(`🐞 → Bug #${expectedCount + 1} registrado correctamente | Contador en pantalla: ${counterNum}/25\n`);
     console.log(`🐞 → Bug "${academyBugId}" registrado correctamente\n`);
 }
 
@@ -42,9 +35,8 @@ async function answerQuestionary(page, tipoBug, respuesta) {
     await page.getByText(respuesta).check();
     
     const submitBtn = page.getByRole('button', { name: 'Submit' });
-    //await expect(submitBtn).toBeVisible({ timeout: 7000 });
     await submitBtn.click();
-    console.log('✅ → Cuestionario respondido y cerrado');
+    console.log('✅ → Popup Cuestionario: respondido. Mostrando reporte...');
 }
 
 async function closePopup(page, id) {
@@ -52,30 +44,25 @@ async function closePopup(page, id) {
     const isVisible = await popup.isVisible().catch(() => false);
 
     const popupMessages = {
-        'popmake-4406': 'Reporte del bug',
-        'popmake-4393': 'Bugs pendientes'
+        'academy-custom-popup': 'Reporte del Bug',
+        'popmake-4393': 'Bugs Pendientes'
     };
     if (!isVisible) {
         if (popupMessages[id]) {
-            console.log(`⛔ → Popup [${id}]: ${popupMessages[id]} - no visible`);
+            console.log(`⛔ → Popup ${popupMessages[id]}: no visible. Continuando...`);
         } else {
-            console.log(`⛔ → Popup ${id} - no visible`); //Mensaje genérico
+            console.log(`⛔ → Popup ${id} - no visible. Continuando...`); //Mensaje genérico
         }
         return;
     }
 
-    if (popupMessages[id]) console.log(`✅ → Popup [${id}]: ${popupMessages[id]}`);
-    console.log(`✅ → Popup ${id} visible. Intentando cerrar...`);
+    if (popupMessages[id]) console.log(`✅ → Popup ${popupMessages[id]}: visible. Intentando cerrar...`);
     try {
         const closeBtn = popup.locator('.pum-close.popmake-close');
-        await closeBtn.click({ timeout: 5000 });
-        await popup.waitFor({ state: 'hidden', timeout: 6000 });
-        //console.log(`✅ → Popup ${id} cerrado`);
-        if(id === 'popmake-4406') console.log(`✅ → Popup [${id}]: Cerrado`);
-        if(id === 'popmake-4393') console.log(`✅ → Popup [${id}]: Cerrado`);
+        await closeBtn.click({ timeout: 2000 });
+        await popup.waitFor({ state: 'hidden', timeout: 2000 });
+        console.log(`✅ → Popup ${popupMessages[id]}: cerrado. Continuando...`);
     } catch (err) {
         console.warn(`⛔ → No se pudo cerrar el popup ${id}: ${err.message}`);
-        if(id === 'popmake-4406') console.log(`✅ → Popup [${id}]: Cerrado`);
-        if(id === 'popmake-4393') console.log(`✅ → Popup [${id}]: Cerrado`);
     }
 }
