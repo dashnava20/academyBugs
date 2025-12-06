@@ -26,7 +26,14 @@ test.describe("🐞 → Finding all 25 Bugs", () => {
     test(`🐞 → Bug #${bug.id}: ${bug.nombre}`, async ({ page }) => {
       if (bug.action) await bug.action(page);
 
-      await bugInformation(page, bug.id - 1, bug.nombre, bug.tipo, bug.respuesta, bug.academyBugId);
+      await bugInformation(
+        page,
+        bug.id - 1,
+        bug.nombre,
+        bug.tipo,
+        bug.respuesta,
+        bug.academyBugId
+      );
       saveBug(`Bug #${bug.id}: ${bug.nombre}`);
     });
   }
