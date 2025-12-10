@@ -26,6 +26,7 @@ export async function bugInformation(page, tipoBug, respuesta, academyBugId) {
 
     await closePopup(page, '.academy-custom-popup'); // Selector del popup de reporte
     await page.waitForLoadState();
+    await page.waitForTimeout(2000);
     await closePopup(page, '#popmake-4393'); // Selector del popup de bugs pendientes
     await page.waitForLoadState();
 
@@ -66,6 +67,7 @@ async function closePopup(page, id) {
         return;
     }
 
+    //console.log(`${exists ? '✅' : '⛔'} → Popup ${label}: existe.`);
     console.log(`✅ → Popup ${label}: visible. Intentando cerrar...`);
     
     try {

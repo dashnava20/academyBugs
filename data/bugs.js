@@ -77,13 +77,37 @@ export const bugs = [
         ]);
         const popupUrl = page1.url();
         console.log('🌐 → Popup URL:', popupUrl);
-        if (!popupUrl.includes('twitter.com/intent/tweet')) {
-            throw new Error(`❌ La pestaña no abrió la URL esperada de Twitter: ${popupUrl}`);
+        if (!popupUrl.includes('https://twitter.cointent/tweet?original_referer=#')) {
+            throw new Error(`❌ → La pestaña no abrió la URL esperada de Twitter: ${popupUrl}`);
         }
         await page1.close();
         console.log('🌐 → Pestaña cargada y cerrada para continuar');
     }
   },*/
+  { //🐞 Bug #5: Social Media Page is Broken | X
+    id: 5,
+    academyBugId: 'fifth',
+    nombre: 'Social Media Page is Broken | X',
+    tipo: 'Functional',
+    respuesta: 'The twitter share button should show an appropriate page to share the product on Twitter',
+    urlBug:"https://academybugs.com/store/dark-grey-jeans/",
+    action: async(page)=>{
+        await gotoPage(page, 'https://academybugs.com/store/dark-grey-jeans/');
+        await clickByRole(page, 'img', 'X');
+        
+        const [page1] = await Promise.all([
+            page.waitForEvent('popup'),
+            clickByRole(page, 'img', 'X')
+        ]);
+        const popupUrl = page1.url();
+        console.log('🌐 → Popup URL:', popupUrl);
+        if (!popupUrl.includes('https://twitter.cointent/tweet?original_referer=#')) {
+            throw new Error(`❌ → La pestaña no abrió la URL esperada de Twitter: ${popupUrl}`);
+        }
+        await page1.close();
+        console.log('🌐 → Pestaña cargada y cerrada para continuar');
+    }
+  },
   { //🐞 Bug #6: Image with Space on the right
     id: 6,
     academyBugId: 'sixth',
@@ -387,12 +411,12 @@ export const bugs = [
     academyBugId: 'twentyFifth',
     nombre: 'Product Increment Freezes the Page',
     tipo: 'Crash',
-    respuesta: 'The quantity is increased to a desired value',
+    respuesta: 'The quantity is increased to a desired value', //update: the questionary is disabled for this bug
     urlBug:'https://academybugs.com/store/denim-coat/',
     action: async(page)=>{
       await gotoPage(page, 'https://academybugs.com/store/denim-coat/');
-      await clickByRole(page, 'img', 'Green'); //It can also be 'Yelow'.
-      await safeType(page, '#ec_quantity_31_1', '2');
+      await clickByRole(page, 'img', 'Green');
+      await clickByRole(page, 'button', '+'); //It can also be 'ec_details_add_to_cart_area' container with the '+' button.
     }
   }
 ];
