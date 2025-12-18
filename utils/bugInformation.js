@@ -30,8 +30,27 @@ export async function bugInformation(page, tipoBug, respuesta, academyBugId) {
     await closePopup(page, '#popmake-4393'); // Selector del popup de bugs pendientes
     await page.waitForLoadState();
 
-    console.log(`🐞 → Bug "${academyBugId}" registrado correctamente\n`);
-
+    //Validando que el bug se haya registrado
+    const bugsCounter = page.locator('#bugs-counter-badge');
+    await bugsCounter.waitFor({ state: 'visible', timeout: 5000 }); // Increased timeout
+    const bugsText = await bugsCounter.textContent();
+    
+    // Esperando a que el contador se actualice (hasta 3 intentos)
+    let counterUpdated = false;
+    for (let i = 0; i < 3; i++) {
+        const currentCount = parseInt(bugsText) || 0;
+        if (currentCount >= 1) {
+            counterUpdated = true;
+            console.log(`🐞 → Bug "${academyBugId}" registrado correctamente (contador: ${currentCount})\n`);
+            break;
+        }
+        console.log(`⏳ → Esperando actualización del contador... (intento ${i + 1}/3)`);
+        await page.waitForTimeout(2000);
+        const updatedText = await bugsCounter.textContent();
+        bugsText = updatedText;
+    }
+    
+    if (!counterUpdated) console.warn(`⛔ → No se pudo verificar el registro del bug "${academyBugId}" (contador actual: ${bugsText})\n`);
 }
 
 async function answerQuestionary(page, tipoBug, respuesta) {

@@ -28,7 +28,6 @@ export async function safeType(page, selector, text) {
     await element.fill('');
     await element.fill(text);
 
-    console.log(`✅ → Texto escrito en ${selector}: ${text}`);
     return true;
   } catch (e) {
       console.warn(`⛔ → No se pudo escribir en el selector: ${selector}`);
@@ -39,11 +38,13 @@ export async function safeType(page, selector, text) {
 
 
 //Login con credenciales seguras
+// Uso de safeType para mayor robustez
+// Pendiente de mudar variables sensibles a entorno seguro
 export async function loginUser(page, url, email, password) {
   await page.goto(url);
   await page.waitForLoadState('domcontentloaded');
 
-  await console.log('🌐 → Página de login cargada');
+  console.log('🌐 → Página de login cargada');
 
   await page.waitForSelector('#ec_account_login_email', { state: 'visible' });
   await page.waitForSelector('#ec_account_login_password', { state: 'visible' });
@@ -54,18 +55,14 @@ export async function loginUser(page, url, email, password) {
   await safeType(page, emailSelector, email);
   await safeType(page, passwordSelector, password);
 
-    // Botón roto → click via JS
-  await page.evaluate(() => {
-    document.querySelector('button[name="ec_account_form_action"]')?.click();
-  });
-  console.log('🔄 → Enviando formulario sin usar el botón defectuoso...');
-  
-  // Espera a que cargue y verifiquemos si realmente hubo login
+  console.log('🔐 → Credenciales ingresadas, intentando login...');
+  await clickByRole(page, 'button', 'SIGN IN');
+
   await page.waitForLoadState('domcontentloaded');
   await page.waitForTimeout(1000);
 
   // Verificación real del login
-  const loggedIn = await page.locator('.ec_cart_input_row').isVisible().catch(() => false);
+  const loggedIn = await page.locator('.ec_cart_widget_button').isVisible().catch(() => false);
 
   if (loggedIn) {
     console.log('🔐 → Usuario logueado con éxito');

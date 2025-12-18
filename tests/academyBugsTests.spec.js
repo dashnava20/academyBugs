@@ -22,7 +22,7 @@ test.describe("🐞 → Finding all 25 Bugs", () => {
     await page.waitForLoadState('domcontentloaded');
   });
 
-  for (const bug of bugs.slice(4, 5)) { //bugs.slice(15, 16)
+  for (const bug of bugs.slice(15, 16)) { //bugs.slice(15, 16)
     test(`🐞 → Bug #${bug.id}: ${bug.nombre}`, async ({ page }) => {
       if (bug.action) await bug.action(page);
 

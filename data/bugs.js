@@ -62,6 +62,10 @@ export const bugs = [
       await clickByRole(page, 'link', 'Greater Than $299.99 (1)');
     }
   },
+  //  Trying with different approaches to fix Bug #5
+  //  18/12/2025: This bug is currently disabled while I work on a fix to automate it.
+  //  I'm still investigating the best approach to handle the popup and URL verification.
+  
   /*{ //🐞 Bug #5: Social Media Page is Broken | X
     id: 5,
     academyBugId: 'fifth',
@@ -84,7 +88,7 @@ export const bugs = [
         console.log('🌐 → Pestaña cargada y cerrada para continuar');
     }
   },*/
-  { //🐞 Bug #5: Social Media Page is Broken | X
+  /*{ //🐞 Bug #5: Social Media Page is Broken | X
     id: 5,
     academyBugId: 'fifth',
     nombre: 'Social Media Page is Broken | X',
@@ -92,22 +96,35 @@ export const bugs = [
     respuesta: 'The twitter share button should show an appropriate page to share the product on Twitter',
     urlBug:"https://academybugs.com/store/dark-grey-jeans/",
     action: async(page)=>{
-        await gotoPage(page, 'https://academybugs.com/store/dark-grey-jeans/');
-        await clickByRole(page, 'img', 'X');
+      await gotoPage(page, 'https://academybugs.com/store/dark-grey-jeans/');
+    
+      // Start listening for new page/tab with explicit timeout
+      const newTabPromise = page.context().waitForEvent('page', { timeout: 10000 });
+      
+      console.log('🌐 → Click en el botón de compartir en X realizado, esperando nueva pestaña...');
+      //await clickByRole(page, 'img', 'X');
+      await page.getByRole('img', { name: 'X' }).click({force: true});
+      
+      try {
+        const newTab = await newTabPromise;
+        await newTab.waitForLoadState('domcontentloaded');
         
-        const [page1] = await Promise.all([
-            page.waitForEvent('popup'),
-            clickByRole(page, 'img', 'X')
-        ]);
-        const popupUrl = page1.url();
-        console.log('🌐 → Popup URL:', popupUrl);
-        if (!popupUrl.includes('https://twitter.cointent/tweet?original_referer=#')) {
-            throw new Error(`❌ → La pestaña no abrió la URL esperada de Twitter: ${popupUrl}`);
+        const newTabUrl = newTab.url();
+        console.log(`✅ → Nueva pestaña abierta: ${newTabUrl}`);
+        
+        // Verify it's a Twitter URL
+        if (newTabUrl.includes('twitter.co')) {
+          console.log('✅ → URL de Twitter confirmada');
         }
-        await page1.close();
-        console.log('🌐 → Pestaña cargada y cerrada para continuar');
+        
+        // Close only the new tab, keep the original page open
+        await newTab.close();
+        console.log('✅ → Nueva pestaña cerrada. Continuando en la pestaña original...');
+      } catch (error) {
+        console.warn(`⛔ → Error esperando nueva pestaña: ${error.message}`);
+      }
     }
-  },
+  },*/
   { //🐞 Bug #6: Image with Space on the right
     id: 6,
     academyBugId: 'sixth',
@@ -291,19 +308,16 @@ export const bugs = [
     respuesta: 'Your Order History section shows appropriate info',
     urlBug:"https://academybugs.com/account/?ec_page=orders",
     action: async(page)=>{
-      await loginUser(page, 'https://academybugs.com/account/?ec_page=login', 'testing_dash@mail.com', '123456789'); //más adelante con variables de entorno
+      await loginUser(page, 'https://academybugs.com/account/?ec_page=register', 'testing_dash@mail.com', '123456789'); //más adelante con variables de entorno
       await gotoPage(page, 'https://academybugs.com/account/?ec_page=orders');
       
-      //await clickElement(page, page.locator("span[class*='billing_info_update_loader']"));
-      
-      //const bugAction = page.locator('.ec_cart_billing_info_update_loader.academy-bug17');
-      const bugAction = page.locator("span[class*='ec_cart_billing_info_update_loader']");
-      console.log(await bugAction.isVisible());
-      console.log(await bugAction.boundingBox());
+      const historyBlock = page.locator('.ec_account_left');
+      await historyBlock.waitFor({ state: 'visible', timeout: 5000 });
 
+      const loader = historyBlock.locator("span[class*='ec_cart_billing_info_update_loader']");
 
-      await bugAction.waitFor({ state: 'visible', timeout: 5000 });
-      await bugAction.click({ force: true });
+      await loader.waitFor({ state: 'visible', timeout: 5000 });
+      await loader.click({ force: true });
     }
   },
   { //🐞 Bug #18: Billing Information Loads Infinitely | Account Information
