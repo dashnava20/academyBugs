@@ -318,6 +318,11 @@ export const bugs = [
 
       await loader.waitFor({ state: 'visible', timeout: 5000 });
       await loader.click({ force: true });
+
+      const bugHighlight = page.locator('.side-menu-sign-in-button-highlight'); //Temporalmente agregado para validar el resaltado.
+      await bugHighlight.waitFor({ state: 'visible', timeout: 5000 });
+
+      await page.waitForTimeout(2000);
     }
   },
   { //🐞 Bug #18: Billing Information Loads Infinitely | Account Information

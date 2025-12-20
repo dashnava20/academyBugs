@@ -1,6 +1,7 @@
 // utils/bugInformation.js
             
-export async function bugInformation(page, tipoBug, respuesta, academyBugId) {
+export async function bugInformation(page, academyBugId, nombreBug, tipoBug, respuesta, urlBug) {
+
     await page.waitForLoadState();
 
     if (await page.getByRole('heading', { name: 'You found a crash bug,' }).isVisible().catch(()=>false)) {
@@ -55,7 +56,9 @@ export async function bugInformation(page, tipoBug, respuesta, academyBugId) {
 
 async function answerQuestionary(page, tipoBug, respuesta) {
     await page.locator(`input[type="radio"][value="${tipoBug}"]`).check();
+    console.log(`✅ → Popup Cuestionario: tipo de bug "${tipoBug}" seleccionado.`);
     await page.getByText(respuesta).check();
+    console.log(`✅ → Popup Cuestionario: respuesta "${respuesta}" seleccionada.`);
     
     const submitBtn = page.getByRole('button', { name: 'Submit' });
     await submitBtn.click();
