@@ -56,10 +56,10 @@ export const bugs = [
     nombre: 'Filter by Price',
     tipo: 'Functional',
     respuesta: 'A list of products in the selected price range is shown',
-    urlBug:"https://academybugs.com/store/?perpage=25&pricepoint=5",
+    urlBug:"https://academybugs.com/store/weekend-wear/",
     action: async(page)=>{
-      await gotoPage(page, 'https://academybugs.com/store/?perpage=25&pricepoint=5');
-      await clickByRole(page, 'link', 'Greater Than $299.99 (1)');
+      await gotoPage(page, 'https://academybugs.com/store/weekend-wear/');
+      await clickByRole(page, 'link', '$100.00 - $299.99 (1)');
     }
   },
   //  Trying with different approaches to fix Bug #5
@@ -245,12 +245,12 @@ export const bugs = [
       await clickByText(page, 'Orang');
     }
   },
-  { // 🐞 Bug #15: Misspelled Color Name
+  { // 🐞 Bug #15: Too Much Space on Button
     id: 15,
     academyBugId: 'fifteenth',
-    nombre: 'Misspelled Color Name',
+    nombre: 'Too Much Space on Button',
     tipo: 'Content',
-    respuesta: 'There is too much space before the last letter in "Return to Store"',
+    respuesta: 'The caption of the', //The caption of the 'Return to Store' button is written with proper spacing between letters',
     urlBug: 'https://academybugs.com/store/flamingo-tshirt/',
     action: async (page) => {
       await gotoPage(page, 'https://academybugs.com/store/flamingo-tshirt/');
@@ -260,6 +260,9 @@ export const bugs = [
         page.waitForNavigation({ waitUntil: 'domcontentloaded' }).catch(() => null),
         clickElement(page, page.locator('div[id^="ec_cartitem_delete_"]'))
       ]);
+
+      await page.waitForLoadState('domcontentloaded');
+      await clickByText(page, 'RETURN TO STOR');
     }
   },
   { //🐞 Bug #16: Billing Information Loads Infinitely | Update Page
@@ -270,10 +273,10 @@ export const bugs = [
     respuesta: 'Billing information should be updated after filling out',
     urlBug:"https://academybugs.com/account/?ec_page=billing_information",
     action: async(page) => {
-      await loginUser(page, 'https://academybugs.com/account/?ec_page=login', 'testing_dash@mail.com', '123456789');
+      await loginUser(page, 'https://academybugs.com/account/?ec_page=register', 'testing_dash@mail.com', '123456789');
       await gotoPage(page, 'https://academybugs.com/account/?ec_page=billing_information');
 
-      // Fill billing info fields
+      // Llenando el formulario de información de facturación
       const billingFields = [
         ['#ec_account_billing_information_first_name', 'Tesing_Name'],
         ['#ec_account_billing_information_last_name', 'Testing_Lastname'],
@@ -281,16 +284,26 @@ export const bugs = [
         ['#ec_account_billing_information_address', 'Testing'],
         ['#ec_account_billing_information_city', 'Bogotá'],
         ['#ec_account_billing_information_state', 'Cundinamarca'],
-        ['#ec_account_billing_information_zip_code', '110111'],
+        ['#ec_account_billing_information_zip', '110111'],
         ['#ec_account_billing_information_phone', '3000000000']
       ];
-      await page.locator('#ec_account_billing_information_country').selectOption('CO');
+      await page.locator('#ec_account_billing_information_country').selectOption('Colombia');
+      
       for (const [selector, value] of billingFields) {
         await safeType(page, selector, value);
       }
 
       // Click UPDATE and wait for loader to appear/disappear
       await clickByRole(page, 'button', 'UPDATE');
+
+      /*const historyBlock = page.locator('.ec_account_left');
+      await historyBlock.waitFor({ state: 'visible', timeout: 5000 });
+
+      const loader = historyBlock.locator("span[class*='ec_cart_billing_info_update_loader']");
+
+      await loader.waitFor({ state: 'visible', timeout: 5000 });
+      await loader.click({ force: true });*/
+
       const loader = page.locator('.ec_cart_billing_info_update_loader.academy-bug');
       await loader.waitFor({ state: 'visible', timeout: 5000 }).catch(() => {});
       await loader.waitFor({ state: 'hidden', timeout: 10000 }).catch(() => {});
@@ -319,8 +332,8 @@ export const bugs = [
       await loader.waitFor({ state: 'visible', timeout: 5000 });
       await loader.click({ force: true });
 
-      const bugHighlight = page.locator('.side-menu-sign-in-button-highlight'); //Temporalmente agregado para validar el resaltado.
-      await bugHighlight.waitFor({ state: 'visible', timeout: 5000 });
+      //const bugHighlight = page.locator('.side-menu-sign-in-button-highlight'); //Temporalmente agregado para validar el resaltado.
+      //await bugHighlight.waitFor({ state: 'visible', timeout: 5000 });
 
       await page.waitForTimeout(2000);
     }
@@ -333,7 +346,7 @@ export const bugs = [
     respuesta: 'The Billing Address section shows appropriate info',
     urlBug:"https://academybugs.com/account/?ec_page=dashboard",
     action: async(page)=>{
-      await loginUser(page, 'https://academybugs.com/account/?ec_page=login', 'testing_dash@mail.com', '123456789'); //más adelante con variables de entorno
+      await loginUser(page, 'https://academybugs.com/account/?ec_page=register', 'testing_dash@mail.com', '123456789'); //más adelante con variables de entorno
       const itemLoading = page.locator('.academy-bug-18');
       await itemLoading.waitFor({ state: 'visible', timeout: 5000 });
       await itemLoading.click({ force: true });
@@ -408,8 +421,18 @@ export const bugs = [
     urlBug: 'https://academybugs.com/store/professional-suit/',
     action: async (page) => {
       await gotoPage(page, 'https://academybugs.com/store/professional-suit/');
+
+      // Llenando el formulario de comentario
+      const commentFields = [
+        ['#comment', 'This is a comment for testing purposes.'],
+        ['#author', 'Testing_Name'],
+        ['#email', 'testing_dash@mail.com']
+      ];
+      
+      for (const [selector, value] of commentFields) {
+        await safeType(page, selector, value);
+      }
       await clickByRole(page, 'button', 'Post Comment');
-      await page.waitForTimeout(5000); //Validar si es necesario este timeout
     }
   },
   { //🐞 Bug #24: Retrieve Password Freezes the Page

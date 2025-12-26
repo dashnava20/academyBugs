@@ -22,18 +22,20 @@ test.describe("🐞 → Finding all 25 Bugs", () => {
     await page.waitForLoadState('domcontentloaded');
   });
 
-  for (const bug of bugs.slice(15, 16)) { //bugs.slice(15, 16)
+  for (const bug of bugs) { //bugs.slice(15, 16)
     test(`🐞 → Bug #${bug.id}: ${bug.nombre}`, async ({ page }) => {
       if (bug.action) await bug.action(page);
 
       await bugInformation(
         page,
         bug.id - 1,
+        bug.academyBugId,
         bug.nombre,
         bug.tipo,
         bug.respuesta,
-        bug.academyBugId
+        
       );
+
       saveBug(`Bug #${bug.id}: ${bug.nombre}`);
     });
   }

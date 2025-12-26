@@ -1,6 +1,6 @@
 // utils/bugInformation.js
             
-export async function bugInformation(page, academyBugId, nombreBug, tipoBug, respuesta, urlBug) {
+export async function bugInformation(page, bugId, academyBugId, nombreBug, tipoBug, respuesta, urlBug) {
 
     await page.waitForLoadState();
 
@@ -33,7 +33,7 @@ export async function bugInformation(page, academyBugId, nombreBug, tipoBug, res
 
     //Validando que el bug se haya registrado
     const bugsCounter = page.locator('#bugs-counter-badge');
-    await bugsCounter.waitFor({ state: 'visible', timeout: 5000 }); // Increased timeout
+    await bugsCounter.waitFor({ state: 'visible', timeout: 5000 });
     const bugsText = await bugsCounter.textContent();
     
     // Esperando a que el contador se actualice (hasta 3 intentos)
@@ -42,7 +42,7 @@ export async function bugInformation(page, academyBugId, nombreBug, tipoBug, res
         const currentCount = parseInt(bugsText) || 0;
         if (currentCount >= 1) {
             counterUpdated = true;
-            console.log(`🐞 → Bug "${academyBugId}" registrado correctamente (contador: ${currentCount})\n`);
+            console.log(`🐞 → Bug "${academyBugId}: ${nombreBug}" registrado correctamente (contador: ${currentCount})\n`);
             break;
         }
         console.log(`⏳ → Esperando actualización del contador... (intento ${i + 1}/3)`);
@@ -56,13 +56,11 @@ export async function bugInformation(page, academyBugId, nombreBug, tipoBug, res
 
 async function answerQuestionary(page, tipoBug, respuesta) {
     await page.locator(`input[type="radio"][value="${tipoBug}"]`).check();
-    console.log(`✅ → Popup Cuestionario: tipo de bug "${tipoBug}" seleccionado.`);
     await page.getByText(respuesta).check();
-    console.log(`✅ → Popup Cuestionario: respuesta "${respuesta}" seleccionada.`);
     
     const submitBtn = page.getByRole('button', { name: 'Submit' });
     await submitBtn.click();
-    console.log('✅ → Popup Cuestionario: respondido. Mostrando reporte...');
+    console.log('✅ → Popup Cuestionario: respondido. Mostrando reporte del bug...');
 }
 
 async function closePopup(page, id) {
