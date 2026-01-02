@@ -65,30 +65,9 @@ export const bugs = [
   //  Trying with different approaches to fix Bug #5
   //  18/12/2025: This bug is currently disabled while I work on a fix to automate it.
   //  I'm still investigating the best approach to handle the popup and URL verification.
+  //  01/01/2026: Logrado.
   
-  /*{ //🐞 Bug #5: Social Media Page is Broken | X
-    id: 5,
-    academyBugId: 'fifth',
-    nombre: 'Social Media Page is Broken | X',
-    tipo: 'Functional',
-    respuesta: 'The twitter share button should show an appropriate page to share the product on Twitter',
-    urlBug:"https://academybugs.com/store/dark-grey-jeans/",
-    action: async(page)=>{
-        await gotoPage(page, 'https://academybugs.com/store/dark-grey-jeans/');
-        const [page1] = await Promise.all([
-            page.waitForEvent('popup'),
-            clickByRole(page, 'img', 'X')
-        ]);
-        const popupUrl = page1.url();
-        console.log('🌐 → Popup URL:', popupUrl);
-        if (!popupUrl.includes('https://twitter.cointent/tweet?original_referer=#')) {
-            throw new Error(`❌ → La pestaña no abrió la URL esperada de Twitter: ${popupUrl}`);
-        }
-        await page1.close();
-        console.log('🌐 → Pestaña cargada y cerrada para continuar');
-    }
-  },*/
-  /*{ //🐞 Bug #5: Social Media Page is Broken | X
+  { //🐞 Bug #5: Social Media Page is Broken | X
     id: 5,
     academyBugId: 'fifth',
     nombre: 'Social Media Page is Broken | X',
@@ -97,34 +76,19 @@ export const bugs = [
     urlBug:"https://academybugs.com/store/dark-grey-jeans/",
     action: async(page)=>{
       await gotoPage(page, 'https://academybugs.com/store/dark-grey-jeans/');
+      const twitterBtn = page.locator('.ec_details_social a[href*="twitter"]');
     
-      // Start listening for new page/tab with explicit timeout
-      const newTabPromise = page.context().waitForEvent('page', { timeout: 10000 });
-      
-      console.log('🌐 → Click en el botón de compartir en X realizado, esperando nueva pestaña...');
-      //await clickByRole(page, 'img', 'X');
-      await page.getByRole('img', { name: 'X' }).click({force: true});
-      
-      try {
-        const newTab = await newTabPromise;
-        await newTab.waitForLoadState('domcontentloaded');
-        
-        const newTabUrl = newTab.url();
-        console.log(`✅ → Nueva pestaña abierta: ${newTabUrl}`);
-        
-        // Verify it's a Twitter URL
-        if (newTabUrl.includes('twitter.co')) {
-          console.log('✅ → URL de Twitter confirmada');
-        }
-        
-        // Close only the new tab, keep the original page open
-        await newTab.close();
-        console.log('✅ → Nueva pestaña cerrada. Continuando en la pestaña original...');
-      } catch (error) {
-        console.warn(`⛔ → Error esperando nueva pestaña: ${error.message}`);
-      }
+      const [twitterPage] = await Promise.all([
+        page.waitForEvent('popup'),
+        twitterBtn.click()
+      ]);
+
+      await twitterPage.waitForLoadState('domcontentloaded');
+      await twitterPage.close();
+
+      await page.bringToFront();
     }
-  },*/
+  },
   { //🐞 Bug #6: Image with Space on the right
     id: 6,
     academyBugId: 'sixth',

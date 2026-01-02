@@ -1,26 +1,3 @@
 [
-  "Bug #1: Cart Product Increment Update",
-  "Bug #2: Cart Total Amount",
-  "Bug #3: Manufacturer",
-  "Bug #4: Filter by Price",
-  "Bug #6: Image with Space on the right",
-  "Bug #7: Sign In Page",
-  "Bug #8: Image Space Underneath",
-  "Bug #9: Sign In Button",
-  "Bug #10: Password Label",
-  "Bug #11: Russian Text",
-  "Bug #12: Unreadable Symbols",
-  "Bug #13: Product Description",
-  "Bug #14: Misspelled Color Name",
-  "Bug #15: Too Much Space on Button",
-  "Bug #16: Billing Information Loads Infinitely | Update Page",
-  "Bug #17: Order History Page",
-  "Bug #18: Billing Information Loads Infinitely | Account Information",
-  "Bug #19: Product Page Loads Infinitely",
-  "Bug #20: Social Media Page Loads Infinitely | MySpace",
-  "Bug #21: Currency Freezes the Page",
-  "Bug #22: Paginator Freezes the Page",
-  "Bug #23: Post Comment Freezes the Page",
-  "Bug #24: Retrieve Password Freezes the Page",
-  "Bug #25: Product Increment Freezes the Page"
+  "Bug #5: Social Media Page is Broken | X"
 ]
